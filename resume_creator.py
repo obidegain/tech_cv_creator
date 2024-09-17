@@ -12,6 +12,10 @@ class ResumeCreator:
     def set_conf_doc() -> Document:
         doc = Document(documentclass="article", document_options=["a4paper"])
         doc.packages.append(Package(name="geometry", options="margin=1in"))
+        doc.packages.append(Package(name="titlesec"))  # Añadir el paquete titlesec
+
+        # Ajustar el espaciado antes del título de la sección (-0.5em es solo un ejemplo)
+        doc.append(NoEscape(r'\titlespacing{\section}{0pt}{-0.5em}{1em}'))
         return doc
 
     def create_personal_information_section(self, personal_info: dict):
@@ -56,9 +60,12 @@ class ResumeCreator:
         return start_right_line + right_text + end_line
 
     @staticmethod
-    def create_left_line(left_text: str) -> str:
+    def create_left_line(left_text: str, with_enter: bool = True) -> str:
         start_left_line = r'\hfill{'
         end_line_with_enter = r'}\\'
+        end_line = r'}'
+        if not with_enter:
+            return start_left_line + left_text + end_line
         return start_left_line + left_text + end_line_with_enter
 
     def create_line(self):
@@ -70,10 +77,10 @@ class ResumeCreator:
         doc.append(NoEscape(rule))
         doc.append(NoEscape(enter_line))
 
-    def create_full_line(self, right_text: str, left_text: str, bold: bool = True):
+    def create_full_line(self, right_text: str, left_text: str, bold: bool = True, with_enter: bool = True):
         doc = self.doc
         right_text_formated = self.create_right_line(right_text, bold)
-        left_text_formated = self.create_left_line(left_text)
+        left_text_formated = self.create_left_line(left_text, with_enter)
         doc.append(NoEscape(right_text_formated))
         doc.append(NoEscape(left_text_formated))
 
@@ -96,17 +103,21 @@ class ResumeCreator:
         with doc.create(Section("WORK EXPERIENCE", numbering=False)):
             enter_line = r'\\'
             self.create_line()
-            for job in jobs:
+            for i, job in enumerate(jobs):
                 job_title = job.get('job_title', '')
                 company_name = job.get('company_name', '')
                 dates = job.get('dates', '')
-                place_and_type = job.get('type', 'Remote for CDMX')
+                place_and_type = job.get('place_and_type', '')
                 tasks = job.get('tasks', [])
                 tools = job.get('tools', None)
                 methodology = job.get('methodology', None)
+                with_enter = True
+
+                if i == len(jobs):
+                    with_enter = False
 
                 self.create_full_line(job_title, dates)
-                self.create_full_line(company_name, place_and_type)
+                self.create_full_line(company_name, place_and_type, with_enter=with_enter)
 
                 for task in tasks:
                     task_text = "- " + task + enter_line
@@ -118,41 +129,55 @@ class ResumeCreator:
                     doc.append(NoEscape(enter_line))
                     doc.append("Methodology: " + methodology)
                     doc.append(NoEscape(enter_line))
-                    doc.append(NoEscape(enter_line))
+
+                doc.append(NoEscape(enter_line))
+
 
     def create_education_section(self, educations: list[dict]):
         doc = self.doc
         with doc.create(Section("EDUCATION", numbering=False)):
             self.create_line()
-            for education in educations:
+            for i, education in enumerate(educations):
                 name = education.get('name')
                 dates = education.get('dates')
                 institute = education.get('institute')
                 place = education.get('place')
+                with_enter = True
+
+                if i == len(educations):
+                    with_enter = False
 
                 self.create_full_line(name, dates)
-                self.create_full_line(institute, place, bold=False)
+                self.create_full_line(institute, place, bold=False, with_enter=with_enter)
 
 
     def create_certifications_section(self, certifications: list):
         doc = self.doc
         with doc.create(Section("CERTIFICATIONS", numbering=False)):
             self.create_line()
-            for certification in certifications:
+            for i, certification in enumerate(certifications):
                 title = certification.get('title')
                 dates = certification.get('dates')
+                with_enter = True
 
-                self.create_full_line(title, dates)
+                if i == len(certifications):
+                    with_enter = False
+
+                self.create_full_line(title, dates, with_enter=with_enter)
 
     def create_languages_section(self, languages: list[dict]):
         doc = self.doc
         with doc.create(Section("LANGUAGES", numbering=False)):
             self.create_line()
-            for language in languages:
+            for i, language in enumerate(languages):
                 name = language.get('name')
                 level = language.get('level')
+                with_enter = True
 
-                self.create_full_line(name, level)
+                if i == len(languages):
+                    with_enter = False
+
+                self.create_full_line(name, level, with_enter=with_enter)
 
     def create_about_me_section(self, about_me: str):
         doc = self.doc
