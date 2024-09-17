@@ -2,6 +2,15 @@
 
 This project provides a Python script that generates a professional PDF resume using the LaTeX document preparation system. It includes a customizable template where you can add your personal details, work experience, education, certifications, and languages.
 
+## Requirements
+
+To run this project, you need the following dependencies:
+
+- Python 3.x
+- [pylatex](https://github.com/JelteF/PyLaTeX) library for generating LaTeX documents
+- LaTeX distribution (for compiling the document)
+- `latexmk` tool (for building the PDF)
+
 ## Create virtual enviroment
 
 ```bash
@@ -11,15 +20,6 @@ python3 -m venv venv
 ```bash
 source venv/bin/activate
 ```
-
-## Requirements
-
-To run this project, you need the following dependencies:
-
-- Python 3.x
-- [pylatex](https://github.com/JelteF/PyLaTeX) library for generating LaTeX documents
-- LaTeX distribution (for compiling the document)
-- `latexmk` tool (for building the PDF)
 
 ### Installing Dependencies
 
