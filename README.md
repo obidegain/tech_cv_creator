@@ -1,5 +1,3 @@
-# tech_cv_creator
-
 # Resume Generator
 
 This project provides a Python script that generates a professional PDF resume using the LaTeX document preparation system. It includes a customizable template where you can add your personal details, work experience, education, certifications, and languages.
